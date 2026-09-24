@@ -2,6 +2,7 @@ package com.lsy.batch.job;
 
 import com.lsy.batch.tasklet.UserBatchTasklet;
 import com.lsy.batch.user.model.UserVo;
+import com.lsy.batch.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -20,13 +21,17 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 public class UserBatchJobConfig {
 
-    private static final String JOB_NAME = "userBatchJob";
-    private static final int CHUNK_SIZE  = 1;
-
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final UserBatchTasklet userBatchTasklet;
     private final SqlSessionFactory sqlSessionFactory;
+    private final UserService userService;
+
+    private static final String JOB_NAME = "userBatchJob";
+    private static final int CHUNK_SIZE = 3;
+
+    private int writeCount = 0;
+    private int chunkCount = 0;
 
     @Bean(JOB_NAME)
     public Job job() {
@@ -63,11 +68,28 @@ public class UserBatchJobConfig {
     @Bean
     public ItemWriter<UserVo> writer() {
         return items -> {
-            int count = 0;
+
+            chunkCount++;
+
+            log.info("========== [Chunk {} Writer 시작] ==========", chunkCount);
+
             for (UserVo user : items) {
-                count++;
-                log.info("[Writer]" + count +  " USER : {}", user);
+                writeCount++;
+
+                log.info("[Chunk {}] [Writer] {}번째 처리 : {}", chunkCount, writeCount, user.getUserId());
+
+                if (writeCount == 6) {
+                    try {
+                        log.info("========== [Chunk {}] 6번째에서 강제 예외 ==========", chunkCount);
+                        throw new RuntimeException("트랜잭션 롤백 테스트");
+                    } catch (RuntimeException e) {
+                        log.info("========== [Chunk {}] 예외를 Writer에서 잡음 ==========", chunkCount);
+                    }
+                }
+                userService.insertBatchTest(user.getUserId());
             }
+
+            log.info("========== [Chunk {} Writer 종료 / 아직 COMMIT 전] ==========", chunkCount);
         };
     }
 }

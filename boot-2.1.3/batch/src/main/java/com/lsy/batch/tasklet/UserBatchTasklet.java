@@ -26,9 +26,6 @@ public class UserBatchTasklet implements Tasklet {
 
         List<UserVo> userList = userService.selectUserList();
         log.info("조회된 사용자 수: {}", userList.size());
-
-        userList.forEach(user -> log.info("USER: {}", user));
-
         log.info("================= User Batch Step1 종료 =================");
 
         return RepeatStatus.FINISHED;
