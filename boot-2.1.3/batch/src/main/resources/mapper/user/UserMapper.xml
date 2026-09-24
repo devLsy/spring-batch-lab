@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lsy.batch.user.mapper.UserMapper">
+
+    <resultMap id="userResultMap" type="com.lsy.batch.user.model.UserVo">
+        <id property="userId" column="USER_ID"/>
+
+        <result property="loginId" column="LOGIN_ID"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="userName" column="USER_NAME"/>
+        <result property="email" column="EMAIL"/>
+        <result property="phone" column="PHONE"/>
+        <result property="statusCd" column="STATUS_CD"/>
+        <result property="loginFailCnt" column="LOGIN_FAIL_CNT"/>
+        <result property="lastLoginAt" column="LAST_LOGIN_AT"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="updatedAt" column="UPDATED_AT"/>
+    </resultMap>
+
+    <!-- 목록 조회 -->
+    <select id="selectUserList" resultType="UserVo">
+        /* com.lsy.batch.user.mapper.UserMapper.selectUserList [사용자 목록 조회] */
+        SELECT
+              USER_ID
+            , LOGIN_ID
+            , PASSWORD
+            , USER_NAME
+            , EMAIL
+            , PHONE
+            , STATUS_CD
+            , LOGIN_FAIL_CNT
+            , LAST_LOGIN_AT
+            , CREATED_AT
+            , UPDATED_AT
+            FROM TB_USER
+    </select>
+
+</mapper>

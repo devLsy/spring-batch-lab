@@ -1,0 +1,16 @@
+mybatis:
+  mapper-locations: mapper/**/*.xml
+  type-aliases-package: com.lsy.batch
+  configuration:
+    map-underscore-to-camel-case: true
+    jdbc-type-for-null: VARCHAR
+
+spring:
+  datasource:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(LOAD_BALANCE=ON)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=ORCL)))
+    hikari:
+      username: DEV_01
+      password: 1234
+      connection-timeout: 60000
+      auto-commit: false
